@@ -10,25 +10,20 @@ O objetivo é construir uma aplicação real, mantendo separação entre requisi
 
 ## 2. Estado atual
 
-O projeto está em fase inicial de desenvolvimento.
-
-A estrutura do projeto já foi criada e o ambiente de desenvolvimento foi configurado e validado.
+O projeto é um MVP fullstack funcional da área pública.
 
 Atualmente existem:
 
-- frontend público inicial;
-- backend inicial em Spring Boot;
-- PostgreSQL instalado e funcionando;
-- banco de dados `clinica` criado localmente;
-- Git configurado;
-- repositório conectado ao GitHub;
-- documentação inicial do projeto.
+- frontend público (direção visual 2, editorial), servido pelo backend;
+- backend Spring Boot com API REST, camada de serviço, persistência JPA e tratamento de erros;
+- schema do banco versionado com Flyway (tabela `professional_profile`);
+- integração frontend → API → serviço → repositório → PostgreSQL para os dados profissionais e de contato;
+- testes automatizados do backend;
+- requisitos em `docs/requirements/` e ADRs em `docs/architecture/`;
+- Git configurado e repositório conectado ao GitHub.
 
-O frontend já possui uma primeira versão demonstrável da área pública.
-
-O backend ainda está em estágio inicial e não possui as funcionalidades de negócio implementadas.
-
-O banco de dados ainda não possui o modelo definitivo da aplicação.
+Os dados profissionais reais da cliente (CRP, formação, abordagem, WhatsApp, e-mail, endereço etc.) **ainda não foram fornecidos**.
+A aplicação está pronta para recebê-los; até lá, a página exibe placeholders identificados como provisórios.
 
 ## 3. Objetivo inicial demonstrável
 
@@ -186,7 +181,9 @@ Dependências principais utilizadas inicialmente:
 - Spring Data JPA;
 - Spring Validation;
 - PostgreSQL Driver;
-- Spring Boot DevTools.
+- Flyway (migrations do schema);
+- Spring Boot DevTools;
+- H2 (somente no escopo de teste).
 
 O backend utiliza Maven para gerenciamento do projeto e dependências.
 
@@ -243,81 +240,125 @@ Clinica/
 ├── backend/
 │   ├── pom.xml
 │   └── src/
+│       ├── main/java/br/com/igormanel/clinica/
+│       │   ├── ClinicaBackendApplication.java
+│       │   ├── config/            (token administrativo, interceptor, cabeçalhos de segurança)
+│       │   ├── profile/
+│       │   │   ├── controller/    (PublicProfileController, AdminProfileController)
+│       │   │   ├── service/       (ProfessionalProfileService)
+│       │   │   ├── repository/    (ProfessionalProfileRepository)
+│       │   │   ├── entity/        (ProfessionalProfile, Address)
+│       │   │   └── dto/           (PublicProfileResponse, ProfileUpdateRequest)
+│       │   └── shared/exception/  (ApiExceptionHandler e exceções)
+│       ├── main/resources/
+│       │   ├── application.properties
+│       │   └── db/migration/V1__create_professional_profile.sql
+│       └── test/                  (testes + application-test.properties)
 ├── frontend/
-│   ├── css/
-│   │   └── style.css
-│   ├── js/
-│   │   └── script.js
+│   ├── assets/images/crislane.jpg
+│   ├── css/style.css
+│   ├── js/script.js
 │   └── index.html
 ├── docs/
-│   ├── requirements/
-│   └── architecture/
+│   ├── requirements/requisitos.md
+│   └── architecture/ADR-001..003
 ├── .gitignore
+├── README.md
 └── PROJECT_CONTEXT.md
 ```
 
 ## 10. Frontend atual
 
-O frontend possui uma primeira versão demonstrável da área pública.
+A área pública segue a direção visual 2: composição editorial e assimétrica, tipografia serifada, amarelo-manteiga e neutros quentes.
 
-A versão atual contempla:
+Seções:
 
-- cabeçalho com navegação;
-- apresentação profissional;
-- seção sobre atuação;
-- informações sobre atendimento online;
+- cabeçalho com navegação e menu mobile;
+- apresentação;
+- Sobre, com a fotografia fornecida pela cliente (`frontend/assets/images/crislane.jpg`);
+- demandas atendidas;
+- atendimento online;
 - localização;
-- seção de contato;
-- WhatsApp;
-- E-mail;
-- rodapé;
-- comportamento de navegação para dispositivos móveis;
-- layout responsivo.
+- contato (WhatsApp e e-mail);
+- rodapé com aviso de emergência (CVV 188 / SAMU 192).
 
-A identidade visual atual utiliza tons de amarelo-manteiga e neutros quentes.
+Integração com o backend:
 
-A versão anterior utilizava azul e possuía elementos de agenda pública e assistente virtual. Esses elementos foram removidos após a reunião com a cliente.
+- `js/script.js` busca `GET /api/public/profile`.
+- Campos com valor substituem os placeholders (via `textContent`).
+- WhatsApp e e-mail viram links `https://wa.me/...` e `mailto:`.
+- Campos nulos mantêm o placeholder.
+- Sem backend (arquivo aberto direto), a página continua igual, com os placeholders.
 
-O frontend atualmente não realiza persistência de dados e não possui integração com o backend.
+Verificado em navegador headless (Chrome) em 320, 390, 768, 1024 e 1440px:
+
+- sem rolagem horizontal;
+- imagem carregada;
+- menu mobile abrindo e fechando (clique, link e Esc);
+- links internos funcionando;
+- nenhum erro no console.
+
+Não existem agenda pública, horários, agendamento, assistente virtual nem telefone como canal.
 
 ## 11. Backend atual
 
-O backend inicial foi gerado utilizando Spring Boot.
+Monólito modular em Spring Boot. O módulo implementado é `profile`: conteúdo público e contato.
 
-O projeto possui a aplicação principal e a estrutura inicial necessária para evolução do sistema.
+### Endpoints
 
-A conexão com o PostgreSQL foi configurada utilizando variáveis de ambiente:
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/api/public/profile` | Dados profissionais, contato (com links) e localização. Campos não informados retornam `null`. |
+| PUT | `/api/admin/profile` | Substitui os dados do perfil. Exige `Authorization: Bearer <ADMIN_API_TOKEN>`; validado com Bean Validation. |
+| GET | `/` | Frontend estático (copiado de `frontend/` no build). |
 
-```text
-DB_USERNAME
-DB_PASSWORD
-```
+### Erros
 
-A configuração não deve conter credenciais diretamente no código-fonte.
+Respostas em Problem Details (RFC 9457, `application/problem+json`):
 
-O backend ainda não possui as entidades, repositórios, serviços e controladores definitivos da aplicação.
+- 400 para validação, com a lista `errors` de `{field, message}`, e para JSON inválido;
+- 401 para token ausente ou inválido;
+- 404, 405 e 500 genérico.
 
-Os testes iniciais do projeto foram executados com sucesso.
+Nenhuma resposta inclui stack trace ou detalhes internos.
+
+### Segurança
+
+- Credenciais apenas por variáveis de ambiente (`DB_USERNAME`, `DB_PASSWORD`, `ADMIN_API_TOKEN`).
+- API administrativa desabilitada quando o token não está definido ou tem menos de 32 caracteres.
+- Comparação do token em tempo constante.
+- Cabeçalhos `X-Content-Type-Options`, `X-Frame-Options` e `Referrer-Policy`; `Cache-Control: no-store` na API.
+- Corpo das requisições não é registrado em log.
+
+### Testes
+
+`mvn test` usa H2 em memória (modo PostgreSQL) e as mesmas migrations; não precisa de credenciais. Cobre:
+
+- contexto Spring;
+- repositório;
+- endpoints: sucesso, autenticação, validação, JSON inválido, 404/405 e entrega do frontend e da imagem;
+- formatação dos DTOs.
+
+`PostgresIntegrationTest` roda contra o PostgreSQL real quando `DB_USERNAME`/`DB_PASSWORD` estão definidas.
 
 ## 12. Banco de dados
 
-O PostgreSQL está instalado e o servidor local está funcionando.
+PostgreSQL local, banco `clinica`, schema gerenciado pelo Flyway (`spring.jpa.hibernate.ddl-auto=validate`).
 
-O banco utilizado atualmente para o projeto é:
+### Tabela `professional_profile`
 
-```text
-clinica
-```
+Registro único (id = 1, garantido por `check`).
 
-A conexão local foi validada utilizando:
+- `display_name` — obrigatório; registro inicial: "Crislane Soares".
+- `professional_registry`, `education`, `approach`, `online_service_info`.
+- `whatsapp_number` — somente dígitos, com DDI e DDD.
+- `email`.
+- `address_*` — logradouro, complemento, bairro, cidade, UF, CEP e informações de acesso.
+- `updated_at`.
 
-```text
-psql -U postgres -h localhost -p 5432
-```
+Todos os campos, exceto o nome, começam nulos, o que significa "pendente".
 
-O modelo de dados definitivo ainda não foi criado.
-
-Antes de implementar funcionalidades que dependam de persistência, os requisitos relacionados aos dados deverão ser definidos.
+Não existem tabelas de pacientes, mensagens, agenda, horários, prontuários, pagamentos, avaliações ou usuários.
 
 Não serão utilizados dados reais de pacientes durante o desenvolvimento e os testes.
 
@@ -438,19 +479,24 @@ e confirmar que somente os arquivos esperados serão versionados.
 
 ## 17. Pendências imediatas
 
-- [ ] Atualizar e manter este `PROJECT_CONTEXT.md` conforme as decisões da cliente.
-- [ ] Criar e revisar requisitos funcionais em `docs/requirements/`.
-- [ ] Definir quais informações profissionais reais serão apresentadas na página.
-- [ ] Definir informações reais de localização.
-- [ ] Definir os dados reais de WhatsApp e E-mail.
-- [ ] Validar com a cliente o conteúdo textual definitivo da página.
-- [ ] Definir o próximo conjunto de funcionalidades do backend.
-- [ ] Definir o modelo inicial do banco de dados quando houver necessidade de persistência.
-- [ ] Criar endpoints somente após os requisitos correspondentes estarem definidos.
-- [ ] Definir se será necessário painel administrativo.
-- [ ] Definir futuramente o fluxo de comunicação pelo WhatsApp, caso a cliente queira automação.
-- [ ] Validar novamente a interface com a cliente após a revisão visual.
-- [ ] Fazer o deploy somente depois da validação das funcionalidades e requisitos necessários.
+Dependem da cliente:
+
+- [ ] CRP, formação acadêmica e abordagem teórica.
+- [ ] Confirmar o texto "Psicóloga Lacaniana." da seção Sobre em relação ao campo "Abordagem", que ainda está pendente.
+- [ ] Número de WhatsApp e endereço de e-mail.
+- [ ] Endereço completo do consultório e informações de acesso.
+- [ ] Plataforma e condições do atendimento online.
+- [ ] Lista definitiva de demandas atendidas ("Outras demandas").
+- [ ] Validar o texto definitivo da página e a interface revisada.
+- [ ] Definir se haverá formulário de contato e, nesse caso, quais campos, o destino e o tempo de retenção (LGPD).
+- [ ] Definir se será necessário painel administrativo ou login.
+
+Técnicas:
+
+- [ ] Executar a aplicação e o `PostgresIntegrationTest` com `DB_USERNAME`/`DB_PASSWORD` definidas, para validar a migration no PostgreSQL 18 local.
+- [ ] Mapa da localização (embed) quando o endereço for fornecido.
+- [ ] Remover a faixa "Versão de demonstração" quando os dados reais forem preenchidos.
+- [ ] Definir hospedagem, HTTPS e o deploy somente após a validação.
 
 ## 18. Informações que não devem ser inventadas
 
@@ -511,3 +557,15 @@ Quando uma informação ainda não tiver sido fornecida ou validada, devo utiliz
 - HTML, CSS e JavaScript auditados.
 - `git diff --check` executado sem apontamentos de erro.
 - `PROJECT_CONTEXT.md` atualizado para refletir o estado atual do projeto.
+
+### 2026-10-08
+
+- Backend implementado como monólito modular (módulo `profile`): entidade, repositório, serviço, DTOs, controllers e tratamento de erros em Problem Details.
+- Flyway adicionado; migration `V1__create_professional_profile.sql`.
+- Endpoints `GET /api/public/profile` e `PUT /api/admin/profile` (protegido por `ADMIN_API_TOKEN`).
+- Frontend integrado à API, mantendo os placeholders quando o dado não existe; links de WhatsApp e e-mail gerados a partir dos dados.
+- Frontend passou a ser servido pelo Spring Boot (mesma origem).
+- Ajustes de acessibilidade (`.visually-hidden`), trava de rolagem do menu sem depender de `:has()` e favicon inline.
+- Testes automatizados criados (H2 nos testes); `mvn test` deixou de depender de credenciais.
+- Responsividade e integração verificadas em Chrome headless.
+- Criados `README.md`, `docs/requirements/requisitos.md` e ADRs 001–003.
