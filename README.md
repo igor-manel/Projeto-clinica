@@ -1,6 +1,6 @@
 # Clínica — site profissional de psicologia
 
-MVP fullstack da área pública do site da psicóloga Crislane Soares.
+MVP fullstack da área pública do site da psicóloga (imaginaria).
 
 - **Frontend:** HTML, CSS e JavaScript puro (`frontend/`)
 - **Backend:** Java 25, Spring Boot 4.1.1, Spring Web, Spring Data JPA, Bean Validation, Flyway (`backend/`)
@@ -52,7 +52,7 @@ Os dados profissionais e de contato começam vazios (pendentes). Quando a client
 
 ```powershell
 $body = @{
-  name = "Crislane Soares"
+  name = "???"
   professionalRegistry = "<CRP>"
   education = "<formação>"
   approach = "<abordagem>"
