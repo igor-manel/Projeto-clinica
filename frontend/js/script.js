@@ -56,13 +56,11 @@
   }
 
   /* Informações profissionais e de contato vindas da API ---------------- */
-  // Campos ainda não informados pela cliente chegam nulos e mantêm o
-  // placeholder do HTML. Sem o backend (ex.: arquivo aberto direto no
-  // navegador), a página continua exibindo os placeholders.
+  // Campos nulos mantêm o texto do HTML. Sem o backend (ex.: arquivo aberto
+  // direto no navegador), a página exibe os dados de demonstração do HTML.
 
   function fill(el, text) {
     el.textContent = text;
-    el.classList.remove('placeholder');
   }
 
   function renderAddress(location) {
@@ -122,6 +120,6 @@
     fetch('api/public/profile', { headers: { Accept: 'application/json' } })
       .then(function (response) { return response.ok ? response.json() : null; })
       .then(function (profile) { if (profile) renderProfile(profile); })
-      .catch(function () { /* backend indisponível: mantém os placeholders */ });
+      .catch(function () { /* backend indisponível: mantém o conteúdo do HTML */ });
   }
 })();

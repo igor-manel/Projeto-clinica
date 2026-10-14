@@ -22,14 +22,14 @@ class ProfessionalProfileRepositoryTest {
 	private ProfessionalProfileRepository repository;
 
 	@Test
-	void initialProfileHasOnlyTheNameAndNoPendingData() {
+	void initialProfileHasFictitiousSeedData() {
 		ProfessionalProfile profile = repository.findById(ProfessionalProfile.SINGLETON_ID).orElseThrow();
 
-		assertThat(profile.getDisplayName()).isEqualTo("Crislane Soares");
-		assertThat(profile.getProfessionalRegistry()).isNull();
-		assertThat(profile.getWhatsappNumber()).isNull();
-		assertThat(profile.getEmail()).isNull();
-		assertThat(profile.getAddress()).isNull();
+		assertThat(profile.getDisplayName()).isEqualTo("Helena Duarte");
+		assertThat(profile.getProfessionalRegistry()).isEqualTo("CRP 00/12345");
+		assertThat(profile.getWhatsappNumber()).isEqualTo("5511900000000");
+		assertThat(profile.getEmail()).isEqualTo("contato@helenaduarte.example");
+		assertThat(profile.getAddress().getCity()).isEqualTo("São Paulo");
 		assertThat(profile.getUpdatedAt()).isNotNull();
 	}
 

@@ -29,7 +29,7 @@ class ProfileApiTest {
 
 	private static final String VALID_BODY = """
 			{
-			  "name": "Crislane Soares",
+			  "name": "Nome Teste",
 			  "professionalRegistry": "00/00000",
 			  "education": "Formação fictícia de teste",
 			  "approach": "Abordagem fictícia de teste",
@@ -52,17 +52,17 @@ class ProfileApiTest {
 	private MockMvc mvc;
 
 	@Test
-	void publicProfileReturnsNameAndPendingFieldsAsNull() throws Exception {
+	void publicProfileReturnsFictitiousSeedData() throws Exception {
 		mvc.perform(get("/api/public/profile"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andExpect(header().string("Cache-Control", "no-store"))
 				.andExpect(header().string("X-Content-Type-Options", "nosniff"))
-				.andExpect(jsonPath("$.name").value("Crislane Soares"))
-				.andExpect(jsonPath("$.professionalRegistry").value(nullValue()))
-				.andExpect(jsonPath("$.contact.whatsapp").value(nullValue()))
-				.andExpect(jsonPath("$.contact.email").value(nullValue()))
-				.andExpect(jsonPath("$.location.street").value(nullValue()));
+				.andExpect(jsonPath("$.name").value("Helena Duarte"))
+				.andExpect(jsonPath("$.professionalRegistry").value("CRP 00/12345"))
+				.andExpect(jsonPath("$.contact.whatsapp.display").value("+55 (11) 90000-0000"))
+				.andExpect(jsonPath("$.contact.email.url").value("mailto:contato@helenaduarte.example"))
+				.andExpect(jsonPath("$.location.street").value("Rua das Acácias, 123"));
 	}
 
 	@Test
@@ -145,13 +145,13 @@ class ProfileApiTest {
 	}
 
 	@Test
-	void servesFrontendAndClientImage() throws Exception {
+	void servesFrontendAndPortrait() throws Exception {
 		mvc.perform(get("/index.html"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
-		mvc.perform(get("/assets/images/crislane.jpg"))
+		mvc.perform(get("/assets/images/retrato.svg"))
 				.andExpect(status().isOk())
-				.andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_JPEG));
+				.andExpect(content().contentTypeCompatibleWith("image/svg+xml"));
 	}
 
 }

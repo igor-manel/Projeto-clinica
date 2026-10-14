@@ -27,11 +27,7 @@
   --ink-soft: #463c2f;
   --muted: #685b47;
   --ochre: #86610f;
-
-  /* Conteúdo provisório: neutro e tracejado, distinto do amarelo da marca */
-  --placeholder-bg: #ece5d6;
-  --placeholder-text: #564a38;
-  --placeholder-border: #b8a98c;
+  --map-border: #b8a98c;
 
   --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
   --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -137,21 +133,6 @@ svg { display: block; }
 
 .skip-link:focus { top: 16px; }
 
-/* Conteúdo provisório: destacado para ficar evidente na apresentação */
-.placeholder {
-  background: var(--placeholder-bg);
-  color: var(--placeholder-text);
-  font-family: var(--font-sans);
-  font-style: normal;
-  letter-spacing: 0;
-  border-radius: 3px;
-  padding: 0 .35em;
-  outline: 1px dashed var(--placeholder-border);
-  outline-offset: -1px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-
 /* ==========================================================================
    3. Componentes
    ========================================================================== */
@@ -238,16 +219,8 @@ svg { display: block; }
 }
 
 /* ==========================================================================
-   4. Faixa de demonstração e cabeçalho
+   4. Cabeçalho
    ========================================================================== */
-
-.demo-banner {
-  padding: 7px var(--gutter);
-  background: var(--sand);
-  color: var(--ink-soft);
-  font-size: .8125rem;
-  text-align: center;
-}
 
 .site-header {
   position: sticky;
@@ -533,15 +506,12 @@ svg { display: block; }
   background: var(--sand);
 }
 
-/* Foto vertical (720×1269): o recorte aproxima rosto e ombros dentro do arco */
+/* Ilustração no mesmo formato do arco (4:5) */
 .portrait-img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 80%;
-  transform: scale(1.3);
-  transform-origin: 42% 30%;
 }
 
 .about-text {
@@ -758,7 +728,7 @@ svg { display: block; }
 
 .address-line { justify-self: start; }
 
-.map-placeholder {
+.map-art {
   grid-column: 7 / 13;
   display: flex;
   flex-direction: column;
@@ -770,7 +740,7 @@ svg { display: block; }
   background:
     repeating-radial-gradient(circle at 62% 42%, transparent 0 22px, rgba(134, 97, 15, .14) 22px 23px),
     var(--paper-deep);
-  border: 1px dashed var(--placeholder-border);
+  border: 1px solid var(--map-border);
   color: var(--muted);
   font-size: .9rem;
 }
@@ -1105,7 +1075,7 @@ a.contact-value:hover { text-decoration-color: var(--ink); }
 
   .location-text { margin-bottom: 48px; }
 
-  .map-placeholder {
+  .map-art {
     min-height: 320px;
     border-radius: 0 0 0 140px;
   }
@@ -1167,6 +1137,4 @@ a.contact-value:hover { text-decoration-color: var(--ink); }
   }
 
   .online-ring { right: -320px; top: -300px; }
-
-  .demo-banner { font-size: .75rem; }
 }

@@ -1,6 +1,8 @@
 # Clínica — site profissional de psicologia
 
-MVP fullstack da área pública do site da psicóloga (imaginaria).
+MVP fullstack da área pública do site de uma psicóloga.
+
+Todos os dados pessoais e profissionais exibidos (nome, CRP, contatos, endereço etc.) são fictícios.
 
 - **Frontend:** HTML, CSS e JavaScript puro (`frontend/`)
 - **Backend:** Java 25, Spring Boot 4.1.1, Spring Web, Spring Data JPA, Bean Validation, Flyway (`backend/`)
@@ -28,12 +30,12 @@ mvn spring-boot:run
 
 Acesse <http://localhost:8080/>. O Spring Boot serve o frontend e a API na mesma origem.
 
-Na primeira execução, o Flyway cria a tabela `professional_profile` com o registro inicial.
+Na primeira execução, o Flyway cria a tabela `professional_profile` com o registro inicial (dados fictícios).
 
 > Se `DB_USERNAME`/`DB_PASSWORD` não estiverem definidas, a aplicação não inicia
 > (erro de autenticação com o usuário literal `${DB_USERNAME}`).
 
-Abrir `frontend/index.html` direto no navegador também funciona: a página exibe os placeholders, porque não há backend para fornecer os dados.
+Abrir `frontend/index.html` direto no navegador também funciona: a página exibe os dados fictícios do próprio HTML.
 
 ## Testes
 
@@ -48,11 +50,11 @@ Com `DB_USERNAME` e `DB_PASSWORD` definidas, o `PostgresIntegrationTest` também
 
 ## Preencher as informações da cliente
 
-Os dados profissionais e de contato começam vazios (pendentes). Quando a cliente fornecer as informações reais, com `ADMIN_API_TOKEN` definido:
+Os dados profissionais e de contato começam com valores fictícios. Para substituí-los, com `ADMIN_API_TOKEN` definido:
 
 ```powershell
 $body = @{
-  name = "???"
+  name = "<nome>"
   professionalRegistry = "<CRP>"
   education = "<formação>"
   approach = "<abordagem>"
@@ -70,4 +72,4 @@ Invoke-RestMethod -Method Put -Uri http://localhost:8080/api/admin/profile `
   -ContentType "application/json; charset=utf-8" -Body ([Text.Encoding]::UTF8.GetBytes($body))
 ```
 
-Campos omitidos, nulos ou em branco voltam a ser exibidos como pendentes.
+Campos omitidos, nulos ou em branco ficam vazios na API, e a página mantém o texto do HTML.

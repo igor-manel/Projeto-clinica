@@ -22,8 +22,8 @@ Atualmente existem:
 - requisitos em `docs/requirements/` e ADRs em `docs/architecture/`;
 - Git configurado e repositório conectado ao GitHub.
 
-Os dados profissionais reais da cliente (CRP, formação, abordagem, WhatsApp, e-mail, endereço etc.) **ainda não foram fornecidos**.
-A aplicação está pronta para recebê-los; até lá, a página exibe placeholders identificados como provisórios.
+Todas as informações pessoais e profissionais exibidas (nome, retrato, CRP, formação, abordagem, WhatsApp, e-mail, endereço etc.) são **fictícias**, usadas apenas para demonstração.
+A aplicação está pronta para receber os dados reais pela API administrativa.
 
 ## 3. Objetivo inicial demonstrável
 
@@ -60,7 +60,7 @@ Até o momento, foram confirmados os seguintes requisitos e decisões:
 - Não deverá existir assistente virtual na versão atual.
 - A identidade visual deverá utilizar tons de amarelo-manteiga em substituição à identidade anterior baseada em azul e branco.
 - A interface gráfica deverá ter uma apresentação profissional e ser adequada para desktop e dispositivos móveis.
-- O nome utilizado na apresentação atual é `Crislane Soares`.
+- O nome utilizado na apresentação atual é fictício: `Helena Duarte`.
 
 ### 4.2 Decisões da reunião de 23/09/2026
 
@@ -255,7 +255,7 @@ Clinica/
 │       │   └── db/migration/V1__create_professional_profile.sql
 │       └── test/                  (testes + application-test.properties)
 ├── frontend/
-│   ├── assets/images/crislane.jpg
+│   ├── assets/images/retrato.svg
 │   ├── css/style.css
 │   ├── js/script.js
 │   └── index.html
@@ -275,7 +275,7 @@ Seções:
 
 - cabeçalho com navegação e menu mobile;
 - apresentação;
-- Sobre, com a fotografia fornecida pela cliente (`frontend/assets/images/crislane.jpg`);
+- Sobre, com uma ilustração de retrato (`frontend/assets/images/retrato.svg`);
 - demandas atendidas;
 - atendimento online;
 - localização;
@@ -285,10 +285,10 @@ Seções:
 Integração com o backend:
 
 - `js/script.js` busca `GET /api/public/profile`.
-- Campos com valor substituem os placeholders (via `textContent`).
+- Campos com valor substituem o texto do HTML (via `textContent`).
 - WhatsApp e e-mail viram links `https://wa.me/...` e `mailto:`.
-- Campos nulos mantêm o placeholder.
-- Sem backend (arquivo aberto direto), a página continua igual, com os placeholders.
+- Campos nulos mantêm o texto do HTML.
+- Sem backend (arquivo aberto direto), a página exibe os dados fictícios do próprio HTML.
 
 Verificado em navegador headless (Chrome) em 320, 390, 768, 1024 e 1440px:
 
@@ -349,14 +349,14 @@ PostgreSQL local, banco `clinica`, schema gerenciado pelo Flyway (`spring.jpa.hi
 
 Registro único (id = 1, garantido por `check`).
 
-- `display_name` — obrigatório; registro inicial: "Crislane Soares".
+- `display_name` — obrigatório; registro inicial (fictício): "Helena Duarte".
 - `professional_registry`, `education`, `approach`, `online_service_info`.
 - `whatsapp_number` — somente dígitos, com DDI e DDD.
 - `email`.
 - `address_*` — logradouro, complemento, bairro, cidade, UF, CEP e informações de acesso.
 - `updated_at`.
 
-Todos os campos, exceto o nome, começam nulos, o que significa "pendente".
+O registro inicial é preenchido com dados fictícios de demonstração. Campos nulos significam "não informado".
 
 Não existem tabelas de pacientes, mensagens, agenda, horários, prontuários, pagamentos, avaliações ou usuários.
 
@@ -481,12 +481,7 @@ e confirmar que somente os arquivos esperados serão versionados.
 
 Dependem da cliente:
 
-- [ ] CRP, formação acadêmica e abordagem teórica.
-- [ ] Confirmar o texto "Psicóloga Lacaniana." da seção Sobre em relação ao campo "Abordagem", que ainda está pendente.
-- [ ] Número de WhatsApp e endereço de e-mail.
-- [ ] Endereço completo do consultório e informações de acesso.
-- [ ] Plataforma e condições do atendimento online.
-- [ ] Lista definitiva de demandas atendidas ("Outras demandas").
+- [ ] Substituir os dados fictícios (nome, retrato, CRP, formação, abordagem, contatos, endereço, atendimento online e demandas) pelos dados reais.
 - [ ] Validar o texto definitivo da página e a interface revisada.
 - [ ] Definir se haverá formulário de contato e, nesse caso, quais campos, o destino e o tempo de retenção (LGPD).
 - [ ] Definir se será necessário painel administrativo ou login.
@@ -495,7 +490,6 @@ Técnicas:
 
 - [ ] Executar a aplicação e o `PostgresIntegrationTest` com `DB_USERNAME`/`DB_PASSWORD` definidas, para validar a migration no PostgreSQL 18 local.
 - [ ] Mapa da localização (embed) quando o endereço for fornecido.
-- [ ] Remover a faixa "Versão de demonstração" quando os dados reais forem preenchidos.
 - [ ] Definir hospedagem, HTTPS e o deploy somente após a validação.
 
 ## 18. Informações que não devem ser inventadas
@@ -516,7 +510,7 @@ Ainda devem ser confirmados antes de serem publicados como dados reais:
 - informações específicas sobre atendimento;
 - demais informações profissionais.
 
-Quando uma informação ainda não tiver sido fornecida ou validada, devo utilizar um placeholder claramente identificável ou deixar o campo pendente.
+Os dados atualmente exibidos são fictícios e servem apenas para demonstração; não devem ser apresentados como dados reais da cliente.
 
 ## 19. Histórico de alterações
 
@@ -569,3 +563,8 @@ Quando uma informação ainda não tiver sido fornecida ou validada, devo utiliz
 - Testes automatizados criados (H2 nos testes); `mvn test` deixou de depender de credenciais.
 - Responsividade e integração verificadas em Chrome headless.
 - Criados `README.md`, `docs/requirements/requisitos.md` e ADRs 001–003.
+
+### 2026-10-14
+
+- Informações pessoais da cliente (nome e fotografia) removidas do repositório.
+- Placeholders e faixa "Versão de demonstração" substituídos por dados fictícios no frontend e no registro inicial da migration.

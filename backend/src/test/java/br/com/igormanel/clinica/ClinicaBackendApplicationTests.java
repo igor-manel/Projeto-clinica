@@ -20,7 +20,7 @@ class ClinicaBackendApplicationTests {
 	@Test
 	void contextLoadsAndMigrationCreatesProfile() {
 		assertThat(repository.findById(ProfessionalProfile.SINGLETON_ID))
-				.hasValueSatisfying(profile -> assertThat(profile.getDisplayName()).isEqualTo("Crislane Soares"));
+				.hasValueSatisfying(profile -> assertThat(profile.getDisplayName()).isEqualTo("Helena Duarte"));
 	}
 
 }

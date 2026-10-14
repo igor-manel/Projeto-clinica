@@ -16,10 +16,10 @@ O fluxo de "solicitação de contato" (campos e destino) **não** foi definido.
 1. **Monólito modular** em Spring Boot. Os pacotes são organizados por módulo e, dentro de cada um, por camada:
    - `profile/{controller,service,repository,entity,dto}`
    - `shared/exception` e `config`
-2. **Tabela única `professional_profile`** com um único registro (id = 1). Campos nulos significam "pendente".
-   O frontend mantém o placeholder do HTML quando o valor é nulo.
+2. **Tabela única `professional_profile`** com um único registro (id = 1). O registro inicial usa dados fictícios.
+   O frontend mantém o texto do HTML quando o valor é nulo.
 3. **Frontend servido pelo próprio Spring Boot.** O `maven-resources-plugin` copia `frontend/` para `static/`, então frontend e API ficam na mesma origem, sem CORS.
-   A página continua funcionando aberta diretamente do arquivo, exibindo apenas os placeholders.
+   A página continua funcionando aberta diretamente do arquivo, exibindo os dados fictícios do HTML.
 4. **Não armazenar mensagens de visitantes.** O contato acontece pelos links de WhatsApp (`wa.me`) e e-mail (`mailto:`).
    Guardar dados de pessoas que procuram atendimento psicológico sem fluxo, painel e política de retenção definidos criaria um risco desnecessário à LGPD.
 

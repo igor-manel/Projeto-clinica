@@ -8,11 +8,11 @@ Este arquivo apenas organiza com identificadores o que já foi confirmado; não 
 | ID | Requisito | Situação |
 |----|-----------|----------|
 | REQ-001 | Área pública acessível sem cadastro. | Implementado |
-| REQ-002 | Apresentar informações profissionais da psicóloga. | Estrutura implementada; dados reais pendentes |
-| REQ-003 | Apresentar atuação e demandas atendidas. | Implementado; lista de demandas a confirmar |
-| REQ-004 | Apresentar o atendimento online como modalidade disponível. | Implementado; plataforma/condições pendentes |
-| REQ-005 | Apresentar informações de localização. | Estrutura implementada; endereço pendente |
-| REQ-006 | Contato por WhatsApp e e-mail. | Estrutura implementada (links `wa.me` e `mailto:`); número e e-mail pendentes |
+| REQ-002 | Apresentar informações profissionais da psicóloga. | Implementado com dados fictícios |
+| REQ-003 | Apresentar atuação e demandas atendidas. | Implementado com dados fictícios |
+| REQ-004 | Apresentar o atendimento online como modalidade disponível. | Implementado com dados fictícios |
+| REQ-005 | Apresentar informações de localização. | Implementado com dados fictícios |
+| REQ-006 | Contato por WhatsApp e e-mail. | Implementado (links `wa.me` e `mailto:`) com dados fictícios |
 | REQ-007 | Não usar telefone como canal de contato. | Atendido |
 | REQ-008 | Não exibir agenda pública nem horários disponíveis. | Atendido |
 | REQ-009 | Não ter assistente virtual na versão atual. | Atendido |
@@ -24,7 +24,7 @@ Este arquivo apenas organiza com identificadores o que já foi confirmado; não 
 | ID | Requisito | Situação |
 |----|-----------|----------|
 | RT-001 | Credenciais apenas por variáveis de ambiente (`DB_USERNAME`, `DB_PASSWORD`, `ADMIN_API_TOKEN`). | Implementado |
-| RT-002 | Informações ainda não fornecidas devem aparecer como pendentes, nunca inventadas. | Implementado (campos nulos → placeholder) |
+| RT-002 | Dados pessoais exibidos são fictícios e não devem ser apresentados como reais. | Implementado (seed e HTML com dados fictícios) |
 | RT-003 | Dados da cliente substituíveis sem alterar o código. | Implementado (`PUT /api/admin/profile`) |
 
 ## Não definidos (não implementar sem validação)

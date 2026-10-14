@@ -25,7 +25,7 @@ class AdminApiDisabledTest {
 		mvc.perform(put("/api/admin/profile")
 				.header("Authorization", "Bearer ")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content("{\"name\": \"Crislane Soares\"}"))
+				.content("{\"name\": \"Helena Duarte\"}"))
 				.andExpect(status().isUnauthorized());
 	}
 

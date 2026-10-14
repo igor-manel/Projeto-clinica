@@ -5,7 +5,7 @@ import br.com.igormanel.clinica.profile.entity.ProfessionalProfile;
 
 /**
  * Dados exibidos na área pública. Valores nulos indicam informação ainda não
- * fornecida; o frontend mantém o placeholder correspondente nesses casos.
+ * fornecida; o frontend mantém o texto do HTML nesses casos.
  */
 public record PublicProfileResponse(
 		String name,
